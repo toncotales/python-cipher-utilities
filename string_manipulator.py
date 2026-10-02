@@ -90,10 +90,17 @@ class StringManipulator:
     def _generate_cipher_maps(self) -> tuple[dict[str, str], dict[str, str]]:
         """Generate encryption and decryption substitution maps from seed."""
         self.reset_rng()
-        base_chars = [c for c in string.printable if c not in string.whitespace]
+        base_chars = [
+            c for c in string.printable
+            if c == " " or c not in string.whitespace
+        ]
         shuffled_chars = base_chars.copy()
         
-        self._rng.shuffle(shuffled_chars)
+        n = len(shuffled_chars)
+        for i in range(n - 1, 0, -1):
+            j = self._rng.randint(0, i)
+            shuffled_chars[i], shuffled_chars[j] = shuffled_chars[j], shuffled_chars[i]
+        
         encrypt_map = dict(zip(base_chars, shuffled_chars))
         decrypt_map = dict(zip(shuffled_chars, base_chars))
         return encrypt_map, decrypt_map
