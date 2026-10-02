@@ -90,16 +90,72 @@ python string_manipulator.py unshuffle "ollr WloHed"
 Encrypt:
 
 ```bash
-python string_manipulator.py encrypt "Hello World" --seed 42
+python string_manipulator.py encrypt "Hello World" --seed 40
 ```
 
 Decrypt:
 
 ```bash
-python string_manipulator.py decrypt "..." --seed 42
+python string_manipulator.py decrypt "{HGGYWMYsG;" --seed 40
 ```
 
 Available shuffle modes are `fisher_yates`, `sample`, and `deterministic`.
+
+## Testing
+
+The project uses Python's built-in `unittest` framework. No additional testing packages are required.
+
+The test suite is located in the `tests/` directory:
+
+```text
+tests/
+├── __init__.py
+├── test_cipher_table.py
+├── test_password_generator.py
+└── test_string_manipulator.py
+```
+
+### Run All Tests
+
+From the project root directory, run:
+
+```bash
+python -m unittest discover -s tests -p "test_*.py" -v
+```
+
+This automatically discovers and runs all test files in the `tests/` directory.
+
+### Run a Specific Test File
+
+To run only the cipher table tests:
+
+```bash
+python -m unittest tests.test_cipher_table -v
+```
+
+To run only the password generator tests:
+
+```bash
+python -m unittest tests.test_password_generator -v
+```
+
+To run only the string manipulator tests:
+
+```bash
+python -m unittest tests.test_string_manipulator -v
+```
+
+### Test Output
+
+A successful test run will display the individual tests and finish with a summary similar to:
+
+```text
+Ran XX tests in X.XXXs
+
+OK
+```
+
+If a test fails, `unittest` will display the failing test and the associated error or assertion message.
 
 ## Security Note
 
