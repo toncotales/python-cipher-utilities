@@ -69,11 +69,24 @@ class TestStringManipulatorSubstitutionCipher(unittest.TestCase):
         decrypted = self.manip.substitution_decrypt(encrypted)
         self.assertEqual(self.text, decrypted)
 
-    def test_whitespace_passthrough(self):
+    def test_space_encrypted_non_space_whitespace_passthrough(self):
+        """Spaces should now be encrypted/mapped, while tabs and newlines pass through unchanged."""
         encrypted = self.manip.substitution_encrypt("A B\tC\n")
-        self.assertEqual(encrypted[1], " ")
+        
+        # Space at index 1 is now encrypted instead of staying " "
+        self.assertNotEqual(encrypted[1], " ")
+        
+        # Non-space whitespace characters (tabs, newlines) still pass through
         self.assertEqual(encrypted[3], "\t")
         self.assertEqual(encrypted[5], "\n")
+        
+    def test_cipher_maps_deterministic_shuffle(self):
+        """Verify cipher maps include spaces and use explicit Fisher-Yates deterministic output."""
+        enc_map, dec_map = self.manip._generate_cipher_maps()
+        
+        self.assertIn(" ", enc_map)
+        self.assertIn(" ", dec_map)
+        self.assertEqual(self.manip.substitution_encrypt(" "), enc_map[" "])
 
 
 class TestStringManipulatorCLI(unittest.TestCase):
@@ -95,6 +108,23 @@ class TestStringManipulatorCLI(unittest.TestCase):
             main()
         unshuffle_output = mock_stdout.getvalue().strip()
         self.assertEqual(unshuffle_output, "Result: Hello")
+        
+    @patch("sys.stdout", new_callable=StringIO)
+    def test_cli_encrypt_and_decrypt_with_spaces(self, mock_stdout):
+        # Encrypt string containing spaces
+        test_args_encrypt = ["string_manipulator.py", "encrypt", "Hello World", "-s", "42"]
+        with patch.object(sys, "argv", test_args_encrypt):
+            main()
+        encrypted_output = mock_stdout.getvalue().strip().replace("Result: ", "")
+        mock_stdout.seek(0)
+        mock_stdout.truncate(0)
+
+        # Decrypt string back to original
+        test_args_decrypt = ["string_manipulator.py", "decrypt", encrypted_output, "-s", "42"]
+        with patch.object(sys, "argv", test_args_decrypt):
+            main()
+        decrypted_output = mock_stdout.getvalue().strip()
+        self.assertEqual(decrypted_output, "Result: Hello World")
 
 
 if __name__ == "__main__":
