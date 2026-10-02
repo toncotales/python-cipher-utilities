@@ -45,14 +45,16 @@ class CipherTable:
         
         ciphertext = []
         keyword_length = len(keyword)
-        for i, plain_char in enumerate(plaintext):
-            key_char = keyword[i % keyword_length]
-            
+        key_idx = 0
+        
+        for plain_char in plaintext:
             if plain_char in self.char_to_index:
+                key_char = keyword[key_idx % keyword_length]
                 plain_index = self.char_to_index[plain_char]
                 key_index = self.char_to_index[key_char]
                 ciphertext_index = (plain_index + key_index) % self.num_chars
                 ciphertext.append(self.index_to_char[ciphertext_index])
+                key_idx += 1
             else:
                 ciphertext.append(plain_char)
                 
@@ -67,16 +69,18 @@ class CipherTable:
         
         plaintext = []
         keyword_length = len(keyword)
-        for i, cipher_char in enumerate(ciphertext):
-            key_char = keyword[i % keyword_length]
-            
+        key_idx = 0
+        
+        for cipher_char in ciphertext:
             if cipher_char in self.char_to_index:
+                key_char = keyword[key_idx % keyword_length]
                 cipher_index = self.char_to_index[cipher_char]
                 key_index = self.char_to_index[key_char]
                 plaintext_index = (
                     cipher_index - key_index + self.num_chars
                 ) % self.num_chars
                 plaintext.append(self.index_to_char[plaintext_index])
+                key_idx += 1
             else:
                 plaintext.append(cipher_char)
                 
