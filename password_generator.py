@@ -62,6 +62,12 @@ class PasswordGenerator:
             raise ValueError("Password length must be at least 8 characters.")
         
         symbols = self._get_allowed_symbols()
+        if not symbols:
+            raise ValueError(
+                "Allowed symbol pool is empty. "
+                "Cannot generate required symbols."
+            )
+        
         upper = string.ascii_uppercase
         lower = string.ascii_lowercase
         digits = string.digits
@@ -70,14 +76,9 @@ class PasswordGenerator:
         password_chars = [
             secrets.choice(upper), secrets.choice(upper),
             secrets.choice(lower), secrets.choice(lower),
-            secrets.choice(digits), secrets.choice(digits)
+            secrets.choice(digits), secrets.choice(digits),
+            secrets.choice(symbols), secrets.choice(symbols)
         ]
-        
-        # Safely include symbols only if the pool is non-empty
-        if symbols:
-            password_chars.extend(
-                [secrets.choice(symbols), secrets.choice(symbols)]
-            )
         
         all_pool = upper + lower + digits + symbols
         while len(password_chars) < target_length:
