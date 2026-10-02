@@ -18,10 +18,13 @@ class StringManipulator:
     
     def __init__(self, seed_value: int | None = None) -> None:
         """Initialize the manipulator with an optional RNG seed value."""
+        if seed_value is not None and not isinstance(seed_value, int):
+            raise TypeError("Seed value must be an integer or None.")
+        
         self.seed_value = (
             seed_value
             if seed_value is not None
-            else random.randint(0, 2**31)
+            else random.randint(1, 2**31 - 1)
         )
         self._rng = random.Random(self.seed_value)
         
@@ -48,9 +51,7 @@ class StringManipulator:
             return "".join(self._rng.sample(chars, n))
         
         elif mode == "deterministic":
-            current_seed = (
-                self.seed_value if self.seed_value is not None else 1337
-            )
+            current_seed = self.seed_value if self.seed_value != 0 else 1337
             multiplier = 1664525
             increment = 1013904223
             modulus = 2**32
