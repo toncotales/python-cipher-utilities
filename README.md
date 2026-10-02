@@ -34,7 +34,7 @@ python cipher_table.py encrypt "Hello World" -k SECRET
 Decrypt:
 
 ```bash
-python cipher_table.py decrypt "..." -k SECRET
+python cipher_table.py decrypt ":IN2SS}ST2H" -k SECRET
 ```
 
 A custom character set can also be provided with `--chars`.
@@ -84,7 +84,7 @@ python string_manipulator.py shuffle "Hello World" --mode deterministic
 Unshuffle:
 
 ```bash
-python string_manipulator.py unshuffle "..."
+python string_manipulator.py unshuffle "ollr WloHed"
 ```
 
 Encrypt:
