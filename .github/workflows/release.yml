@@ -1,0 +1,30 @@
+name: Automated Release
+
+# This tells GitHub to run the script ONLY when a new tag starting with 'v' is pushed
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  publish-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Grants permission to create releases
+
+    steps:
+      # 1. Downloads your code into the runner
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetches all history so it can generate accurate changelogs
+
+      # 2. Automatically reads your commit messages and builds a clean release draft
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true # Auto-generates the "What's Changed" commit list
